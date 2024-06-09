@@ -9,26 +9,29 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import formSchema from "@/lib/validation";
+import {formSchema} from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Fade } from "react-awesome-reveal";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import $axios from "@/http";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
-      firstName: "",
-      lastName: "",
+      first_name: "",
+      last_name: "",
       email: "",
       password: "",
       phone: "",
@@ -37,14 +40,28 @@ const SignUp = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit (values: z.infer<typeof formSchema>) {
+    const promise = $axios.post("users/signup/", JSON.stringify(values), {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    toast.promise(promise, {
+      loading: "Creating user...",
+      success: "User created",
+      error: "User creation failed",
+    });
+
+    if((await promise).status === 201) {
+      navigate("/signin");
+    } 
   }
 
   return (
     <Fade direction="right" triggerOnce>
-      <div className="space-y-12 px-24">
-        <div className="border-b border-gray-900/10 py-12 px-24">
+      <div className="space-y-12 md:px-24 md:py-32">
+        <div className="border-b border-gray-900/10 py-12 md:px-24 px-12">
           <h2 className="text-center md:text-[40px] text-2xl font-semibold leading-7 text-gray-900">
             Sign Up
           </h2>
@@ -54,7 +71,7 @@ const SignUp = () => {
                 <div className="sm:col-span-3">
                   <FormField
                     control={form.control}
-                    name="firstName"
+                    name="first_name"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>First name</FormLabel>
@@ -69,7 +86,7 @@ const SignUp = () => {
                 <div className="sm:col-span-3">
                   <FormField
                     control={form.control}
-                    name="lastName"
+                    name="last_name"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Last name</FormLabel>

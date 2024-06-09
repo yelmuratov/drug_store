@@ -8,15 +8,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import formSchema from "@/lib/validation";
+import $axios from "@/http";
+import {loginSchema} from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Fade } from "react-awesome-reveal";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
-const SignUp = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+const SignIn = () => {
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       username: "",
       password: "",
@@ -24,8 +26,18 @@ const SignUp = () => {
   });
 
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  function onSubmit(values: z.infer<typeof loginSchema>) {
+    const promise = $axios.post("users/login/", JSON.stringify(values), {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }); 
+
+    toast.promise(promise, {
+      loading: "Signing in...",
+      success: "Signed in",
+      error: "Sign in failed",
+    });
   }
 
   return (
@@ -34,7 +46,7 @@ const SignUp = () => {
       <Fade direction="left" triggerOnce className="md:w-1/2 w-full flex flex-col md:px-24 py-12 mt-12 px-16 drop-shadow-md border">
         <Form {...form} >
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <h1 className="text-4xl font-bold text-center">Sign Up</h1>
+            <h1 className="text-4xl font-bold text-center">Sign In</h1>
             <FormField
               control={form.control}
               name="username"
@@ -73,4 +85,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default SignIn;
