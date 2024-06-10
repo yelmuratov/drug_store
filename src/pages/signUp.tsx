@@ -21,11 +21,21 @@ import { Fade } from "react-awesome-reveal";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import $axios from "@/http";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useMutation } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 const SignUp = () => {
+
   const navigate = useNavigate();
+  const accessToken = localStorage.getItem("accessToken");
+  
+  useEffect(() => {
+    if(accessToken) navigate("/");
+  }, [accessToken]);
+
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,22 +50,27 @@ const SignUp = () => {
     },
   });
 
-  async function onSubmit (values: z.infer<typeof formSchema>) {
-    const promise = $axios.post("users/signup/", JSON.stringify(values), {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+  const {mutate, isPending} = useMutation({
+    mutationKey: ["SignUp"],
+    mutationFn:async (values: z.infer<typeof formSchema>) =>  {
+      const {data} = await $axios.post("users/signup/", JSON.stringify(values), {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      return data;
+  },
+  onSuccess: () => {
+    toast.success("You have successfully signed up. Please login to continue");
+  },
+  onError: (error) => {
+    console.log(error);
+    toast.error("Something went wrong. Please try again later.");
+  },
+  });
 
-    toast.promise(promise, {
-      loading: "Creating user...",
-      success: "User created",
-      error: "User creation failed",
-    });
-
-    if((await promise).status === 201) {
-      navigate("/signin");
-    } 
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    mutate(values);
   }
 
   return (
@@ -195,7 +210,7 @@ const SignUp = () => {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="Password" {...field} />
+                          <Input type="password" placeholder="******" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -206,6 +221,7 @@ const SignUp = () => {
                 Submit
               </Button>
               </div>
+              <p className="poppins-black text-[12px] md:text-lg">Already have an account <Link to={'/signin'} className="text-blue-500 hover:underline">Sign In</Link></p>
             </form>
           </Form>
         </div>

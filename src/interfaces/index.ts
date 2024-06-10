@@ -17,3 +17,22 @@ export interface IDrug {
     type: string;
   }
 
+  export interface ILogin {
+    accessTokens: string;
+    refreshTokens: string;
+  }
+
+  export interface IUser {
+    id:string;
+    username: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+    password: string;
+    business_name?: string;
+    address?: string;
+    data_joined?: string;
+    phone: string;
+    role: string;
+  }
+

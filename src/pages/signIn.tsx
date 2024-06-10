@@ -10,13 +10,26 @@ import {
 import { Input } from "@/components/ui/input";
 import $axios from "@/http";
 import {loginSchema} from "@/lib/validation";
+import { AuthStore } from "@/store/auth.store";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { Fade } from "react-awesome-reveal";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const SignIn = () => {
+  const navigate = useNavigate();
+  const accessToken = localStorage.getItem("accessToken");
+  
+  useEffect(() => {
+    if(accessToken) navigate("/");
+  }, [accessToken]);
+
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -24,20 +37,38 @@ const SignIn = () => {
       password: "",
     },
   });
+  const {setUser,setAuth} = AuthStore();
 
+  const {mutate} = useMutation({
+    mutationKey: ["login"],
+    mutationFn:async (values: z.infer<typeof loginSchema>) =>  {
+      const {data} = await $axios.post("users/login/", JSON.stringify(values), {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      return data;
+  },
+  onSuccess:async (data) => {
+    toast.success("Login Success");
+    const {access} = data;
+    localStorage.setItem("accessToken", access);
+    const userMe = await $axios.get("users/me/", {
+      headers: {
+        "Authorization": `Bearer ${access}`
+      }
+    });
+    setUser(userMe.data);
+    localStorage.setItem("user", JSON.stringify(userMe.data));
+    setAuth(true);
+  },
+  onError: () => {
+    toast.error("Username or Password is incorrect");
+  },
+  });
 
   function onSubmit(values: z.infer<typeof loginSchema>) {
-    const promise = $axios.post("users/login/", JSON.stringify(values), {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }); 
-
-    toast.promise(promise, {
-      loading: "Signing in...",
-      success: "Signed in",
-      error: "Sign in failed",
-    });
+    mutate(values);
   }
 
   return (
@@ -67,13 +98,14 @@ const SignIn = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="Password" {...field} />
+                    <Input type="password" placeholder="*****" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <Button type="submit">Submit</Button>
+            <p className="poppins-black text-[12px] md:text-lg">Don't have an account <Link to={'/signup'} className="text-blue-500 hover:underline">Sign Up</Link></p>
           </form>
         </Form>
       </Fade>

@@ -17,6 +17,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       </BrowserRouter>
       <Toaster position='top-center' />
     </QueryClientProvider>
-    <Toaster position='top-center' />
   </React.StrictMode>
 );
