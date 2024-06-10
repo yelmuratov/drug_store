@@ -7,6 +7,7 @@ import SignIn from "./pages/signIn.tsx";
 import Products from "./pages/products.tsx";
 import NotFoundPage from "./pages/404.tsx";
 import Orders from "./pages/order.tsx";
+import ProductDetailScreen from "./pages/ProductDetails.tsx";
 // import { toast } from "sonner";
 // import { AuthStore } from "./store/auth.store.ts";
 // import $axios from "./http/index.ts";
@@ -15,31 +16,17 @@ const App = () => {
   const AppRoutes = () => {
     return useRoutes([
       {
-        path: "/",
+        path: '/',
         element: <Layout />,
         children: [
-          {
-            element: <Home />,
-            index: true,
-          },
-          { path: "/signup", element: <SignUp /> },
-          { path: "signin", element: <SignIn  /> },
-          { 
-            path: "contact",
-            element: <Contact />,
-          },
-          {
-            path: "products",
-            element: <Products />,
-          },
-          {
-            path: "orders",
-            element: <Orders />,
-          },
-          {
-            path: "*",
-            element: <NotFoundPage />,
-          }
+          { element: <Home />, index: true },
+          { path: 'signup', element: <SignUp /> },
+          { path: 'signin', element: <SignIn /> },
+          { path: 'contact', element: <Contact /> },
+          { path: 'products', element: <Products /> },
+          { path: 'orders', element: <Orders /> },
+          { path: 'products/:id', element: <ProductDetailScreen /> },
+          { path: '*', element: <NotFoundPage /> },
         ],
       },
     ]);

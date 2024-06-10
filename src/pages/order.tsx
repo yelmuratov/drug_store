@@ -2,6 +2,8 @@ import OrderCard from "@/components/shared/order.card";
 import { IDrug } from "@/interfaces";
 import { drugCartStore } from "@/store/cart.store";
 import { useEffect, useState } from "react";
+import $axios from "@/http"; // Import your axios instance
+import { toast } from "sonner";
 
 const Orders = () => {
   const { setDrugs } = drugCartStore();
@@ -22,15 +24,56 @@ const Orders = () => {
     const updatedOrders = orders.filter(order => order.id !== id);
     setOrders(updatedOrders);
     setDrugs(updatedOrders);
+    localStorage.removeItem(`quantity-${id}`);
     localStorage.setItem("cart", JSON.stringify(updatedOrders));
+  };
+
+  const handleOrder = async () => {
+    const orderItems = orders.map(order => ({
+      drug: order.id,
+      quantity: order.quantity, // Ensure you have quantity in your IDrug interface
+      price: order.price
+    }));
+
+    const orderPayload = {
+      status: "pending",
+      items: orderItems
+    };
+
+    try {
+      const response = await $axios.post("/users/orders/", orderPayload, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
+      console.log(response.data);
+      // Handle successful order submission, e.g., clearing the cart
+      setOrders([]);
+      setDrugs([]);
+      localStorage.removeItem("cart");
+      orders.forEach(order => localStorage.removeItem(`quantity-${order.id}`));
+      toast.success("Order placed successfully");
+    } catch (error) {
+      console.error("Error placing order", error);
+      toast.error("Error placing order");
+    }
   };
 
   return (
     <div className="grid md:grid-cols-1 min-h-[60vh] gap-4 pl-6 p-12">
       {orders.length > 0 ? (
-        orders.map((drug, index) => (
-          <OrderCard key={index} drug={drug} onRemove={handleRemove} />
-        ))
+        <>
+          {orders.map((drug, index) => (
+            <OrderCard key={index} drug={drug} onRemove={handleRemove} />
+          ))}
+          <button
+            onClick={handleOrder}
+            className="mt-4 px-6 py-3 bg-blue-600 text-white text-lg font-semibold rounded hover:bg-blue-500 transition-colors"
+          >
+            Place Order
+          </button>
+        </>
       ) : (
         <div className="flex justify-center items-center h-[60vh]">
           <h1 className="text-gray-600 text-2xl">No Orders yet</h1>
@@ -41,7 +84,3 @@ const Orders = () => {
 };
 
 export default Orders;
-function setDrugs(updatedOrders: IDrug[]) {
-  throw new Error("Function not implemented.");
-}
-
