@@ -50,7 +50,7 @@ const SignUp = () => {
     },
   });
 
-  const {mutate, isPending} = useMutation({
+  const {mutate} = useMutation({
     mutationKey: ["SignUp"],
     mutationFn:async (values: z.infer<typeof formSchema>) =>  {
       const {data} = await $axios.post("users/signup/", JSON.stringify(values), {
@@ -163,7 +163,6 @@ const SignUp = () => {
                           <SelectContent>
                             <SelectItem value="buyer">Buyer</SelectItem>
                             <SelectItem value="seller">Seller</SelectItem>
-                            <SelectItem value="admin">Admin</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />

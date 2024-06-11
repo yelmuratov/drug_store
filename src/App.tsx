@@ -8,9 +8,9 @@ import Products from "./pages/products.tsx";
 import NotFoundPage from "./pages/404.tsx";
 import Orders from "./pages/order.tsx";
 import ProductDetailScreen from "./pages/ProductDetails.tsx";
-// import { toast } from "sonner";
-// import { AuthStore } from "./store/auth.store.ts";
-// import $axios from "./http/index.ts";
+import AddProduct from "./pages/addProduct.tsx";
+import OrderedItems from "./pages/orderedItems.tsx";
+
 
 const App = () => {
   const AppRoutes = () => {
@@ -25,7 +25,9 @@ const App = () => {
           { path: 'contact', element: <Contact /> },
           { path: 'products', element: <Products /> },
           { path: 'orders', element: <Orders /> },
+          { path: 'addproduct', element: <AddProduct />},
           { path: 'products/:id', element: <ProductDetailScreen /> },
+          {path: 'ordereditems', element: <OrderedItems />},
           { path: '*', element: <NotFoundPage /> },
         ],
       },

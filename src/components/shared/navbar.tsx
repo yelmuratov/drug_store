@@ -1,11 +1,16 @@
 import { IUser } from "@/interfaces";
 import { AuthStore } from "@/store/auth.store";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Fade } from "react-awesome-reveal";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Dropdown, type MenuProps } from 'antd';
+import { useCartStore } from "@/store/orders.store";
+
 
 const Navbar = () => {
+
+  const {cartQuantity} = useCartStore();
   const [burgerMenu, setBurgerMenu] = useState(false);
   const accessToken = localStorage.getItem("accessToken");
   const user = JSON.parse(localStorage.getItem("user") || "{}") as IUser;
@@ -20,6 +25,49 @@ const Navbar = () => {
     AuthStore.getState().setUser({} as IUser);
     navigate('/')
   };
+
+  const items: MenuProps['items'] = [
+    {
+      key: '1',
+      label: (
+        <li>
+          {user.first_name} {user.last_name}
+        </li>
+      ),
+    },
+    {
+      key: '2',
+      label: (
+        <li>
+          {user.email}
+        </li>
+      ),
+    },
+    {
+      key: '3',
+      label: (
+        <a>
+          {user.role}
+        </a>
+      ),
+    },
+    {
+      key: '4',
+      label: (
+        <a>
+          {user.phone}
+        </a>
+      ),
+    },
+    {
+      key: '5',
+      label: (
+        <button onClick={LogOut} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
+            Log Out
+        </button>
+      ),
+    }
+  ];
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -85,6 +133,20 @@ const Navbar = () => {
                   Products
                 </Link>
               </li>
+              {accessToken && user.role == 'seller' ? (
+                <li>
+                  <Link
+                    to="/addProduct"
+                    className={
+                      isActive("/addProduct")
+                        ? "block py-2 px-3 md:p-0 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:dark:text-blue-500 dark:bg-blue-600 md:dark:bg-transparent font-bold text-xl"
+                        : "block py-2 px-3 md:p-0 text-gray-500 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent font-bold text-xl"
+                    }
+                  >
+                    Add product
+                  </Link>
+                </li>
+              ) : null}
               <li>
                 <Link
                   to="/contact"
@@ -97,40 +159,47 @@ const Navbar = () => {
                   Contact
                 </Link>
               </li>
+              {
+                accessToken && user.role === 'buyer' ? (
+                  <li>
+                <Link
+                  to="/ordereditems"
+                  className={
+                    isActive("/ordereditems")
+                      ? "block py-2 px-3 md:p-0 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:dark:text-blue-500 dark:bg-blue-600 md:dark:bg-transparent font-bold text-xl"
+                      : "block py-2 px-3 md:p-0 text-gray-500 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent font-bold text-xl"
+                  }
+                >
+                  Orders
+                </Link>
+              </li>): null
+              }
               {accessToken ? (
                 <>
-                  <Link to={'/orders'}>
-                    <i className="fa-solid cursor-pointer fa-cart-shopping text-2xl"></i>
-                  </Link>
-                  <div className="avatar">
-                    <Avatar>
-                      <AvatarImage
-                        onClick={() => setDropdownOpen(!dropdownOpen)}
-                        className="w-12 rounded-full cursor-pointer"
-                        src="https://github.com/shadcn.png"
-                      />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-                    <div
-                      id="userDropdown"
-                      className={`z-10 ${dropdownOpen ? "" : "hidden"} absolute z-50 right-35 mt-2  bg-white   rounded-lg shadow w-44 dark:bg-gray-700 `}
-                    >
-                      <div className="px-4 py-3 text-sm text-gray-900 dark:text-white">
-                        <div className="font-medium truncate cursor-pointer mb-2">{user.username.toLowerCase()}</div>
-                        <div className="font-medium truncate cursor-pointer mb-2">{user.email.toLowerCase()}</div>
-                        <div className="font-medium truncate cursor-pointer mb-2">{user.role}</div>
-                        <div className="font-medium truncate cursor-pointer">{user.phone}</div>
-                      </div>
-                      <div className="py-1 bg-[red]">
-                        <button
-                          onClick={LogOut}
-                          className="block px-4 py-2  text-sm text-white"
-                        >
-                          Sign out
-                        </button>
-                      </div>
+                  {user.role === "buyer" && (
+                    <div className="relative">
+                      <Link to="/orders">
+                        <i className="fa-solid cursor-pointer fa-cart-shopping text-2xl"></i>
+                      </Link>
+                        <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full transform translate-x-1/2 -translate-y-1/2">
+                          {cartQuantity}
+                        </span>
                     </div>
-                  </div>
+                  )}
+                  <div className="relative">
+      <div className="avatar">
+        <Dropdown menu={{ items }} placement="bottomLeft" arrow>
+        <Avatar>
+          <AvatarImage
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            className="w-12 rounded-full cursor-pointer"
+            src="https://github.com/shadcn.png"
+          />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
+      </Dropdown>
+      </div>
+    </div>
                 </>
               ) : (
                 <li className="flex items-center gap-8 my-4">

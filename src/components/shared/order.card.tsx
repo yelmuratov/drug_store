@@ -9,7 +9,6 @@ interface OrderCardProps {
 const OrderCard = ({ drug, onRemove }: OrderCardProps) => {
   const api = import.meta.env.VITE_BASE_URL;
   const [quantity, setQuantity] = useState<number>(() => {
-    // Initialize quantity from local storage if it exists, otherwise default to 1
     const savedQuantity = localStorage.getItem(`quantity-${drug.id}`);
     return savedQuantity ? parseInt(savedQuantity, 10) : 1;
   });

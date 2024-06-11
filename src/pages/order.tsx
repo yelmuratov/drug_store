@@ -4,19 +4,24 @@ import { drugCartStore } from "@/store/cart.store";
 import { useEffect, useState } from "react";
 import $axios from "@/http"; // Import your axios instance
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import { useCartStore } from "@/store/orders.store";
 
 const Orders = () => {
   const { setDrugs } = drugCartStore();
   const accessToken = localStorage.getItem("accessToken");
   const [orders, setOrders] = useState<IDrug[]>([]);
+  const {setOrderedProducts} = useCartStore();
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const navigate = useNavigate();
 
   useEffect(() => {
     setOrders(JSON.parse(localStorage.getItem("cart") || "[]") as IDrug[]);
   }, []);
 
   useEffect(() => {
-    if (!accessToken) {
-      window.location.href = "/";
+    if (!accessToken || user?.role !== "buyer") {
+      navigate("/");
     }
   }, [accessToken]);
 
@@ -25,13 +30,15 @@ const Orders = () => {
     setOrders(updatedOrders);
     setDrugs(updatedOrders);
     localStorage.removeItem(`quantity-${id}`);
+    setOrderedProducts(updatedOrders);
     localStorage.setItem("cart", JSON.stringify(updatedOrders));
+    toast.success("Drug removed from cart");
   };
 
   const handleOrder = async () => {
     const orderItems = orders.map(order => ({
       drug: order.id,
-      quantity: order.quantity, // Ensure you have quantity in your IDrug interface
+      quantity: localStorage.getItem(`quantity-${order.id}`), // Ensure you have quantity in your IDrug interface
       price: order.price
     }));
 
@@ -53,6 +60,7 @@ const Orders = () => {
       setDrugs([]);
       localStorage.removeItem("cart");
       orders.forEach(order => localStorage.removeItem(`quantity-${order.id}`));
+      setOrderedProducts([]);
       toast.success("Order placed successfully");
     } catch (error) {
       console.error("Error placing order", error);

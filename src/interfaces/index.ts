@@ -36,3 +36,11 @@ export interface IDrug {
     role: string;
   }
 
+
+  export interface ICartState { 
+    drugs: IDrug[];
+    cartQuantity: number;
+    setOrderedProducts: (drugs: IDrug[]) => void;
+    setCartQuantity: (quantity: number) => void;
+  }
+
