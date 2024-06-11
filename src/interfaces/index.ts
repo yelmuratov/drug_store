@@ -44,3 +44,8 @@ export interface IDrug {
     setCartQuantity: (quantity: number) => void;
   }
 
+
+  export interface ICategory {
+    id: number;
+    name: string;
+  }

@@ -62,6 +62,7 @@ const SignUp = () => {
   },
   onSuccess: () => {
     toast.success("You have successfully signed up. Please login to continue");
+    navigate("/signin");
   },
   onError: (error) => {
     console.log(error);
