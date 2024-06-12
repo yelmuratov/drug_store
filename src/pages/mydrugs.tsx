@@ -18,10 +18,6 @@ const MyDrugs = () => {
     }
   }, []);
 
-  const handleUpdate = (drugs:IMyDrug[]) => {
-    setMyDrugs(drugs);
-  }
-
   const handleDelete = async (drugId: number) => {
     try {
       await $axios.delete(`/drugs/delete/${drugId}/`, {

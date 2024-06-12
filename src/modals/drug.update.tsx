@@ -85,34 +85,6 @@ const UpdateDrugModal: React.FC<UpdateDrugModalProps> = ({ isOpen, onClose, drug
     }
   };
 
-  const handleCreateDrug = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const formDataToSend = new FormData();
-      Object.keys(formData).forEach((key) => {
-        const formKey = key as keyof FormDataState;
-        const value = formData[formKey];
-        if (value !== null) {
-          formDataToSend.append(formKey, value instanceof File ? value : value.toString());
-        }
-      });
-
-      const response = await $axios.post(`/drugs/create/`, formDataToSend, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      toast.success('Drug created successfully');
-      onUpdate(response.data);
-      onClose();
-    } catch (error) {
-      console.error('Error creating drug:', error);
-      toast.error('Something went wrong. Please try again later.');
-    }
-  };
-
   if (!isOpen) return null;
 
   return (
