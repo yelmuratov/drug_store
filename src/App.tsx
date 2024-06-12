@@ -10,6 +10,7 @@ import Orders from "./pages/order.tsx";
 import ProductDetailScreen from "./pages/ProductDetails.tsx";
 import AddProduct from "./pages/addProduct.tsx";
 import OrderedItems from "./pages/orderedItems.tsx";
+import MyDrugs from "./pages/mydrugs.tsx";
 
 
 const App = () => {
@@ -28,6 +29,9 @@ const App = () => {
           { path: 'addproduct', element: <AddProduct />},
           { path: 'products/:id', element: <ProductDetailScreen /> },
           {path: 'ordereditems', element: <OrderedItems />},
+          {
+            path: 'mydrugs', element:<MyDrugs />
+          },
           { path: '*', element: <NotFoundPage /> },
         ],
       },

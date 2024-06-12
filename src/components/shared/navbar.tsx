@@ -1,7 +1,7 @@
 import { IUser } from "@/interfaces";
 import { AuthStore } from "@/store/auth.store";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { useState, useEffect } from "react";
+import { Avatar} from "@radix-ui/react-avatar";
+import { useState } from "react";
 import { Fade } from "react-awesome-reveal";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Dropdown, type MenuProps } from 'antd';
@@ -14,7 +14,6 @@ const Navbar = () => {
   const [burgerMenu, setBurgerMenu] = useState(false);
   const accessToken = localStorage.getItem("accessToken");
   const user = JSON.parse(localStorage.getItem("user") || "{}") as IUser;
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -160,6 +159,21 @@ const Navbar = () => {
                 </Link>
               </li>
               {
+                accessToken && user.role === 'seller' ? (
+                  <li>
+                <Link
+                  to="/mydrugs"
+                  className={
+                    isActive("/mydrugs")
+                      ? "block py-2 px-3 md:p-0 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:dark:text-blue-500 dark:bg-blue-600 md:dark:bg-transparent font-bold text-xl"
+                      : "block py-2 px-3 md:p-0 text-gray-500 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent font-bold text-xl"
+                  }
+                >
+                  My drugs
+                </Link>
+              </li>): null
+              }
+              {
                 accessToken && user.role === 'buyer' ? (
                   <li>
                 <Link
@@ -178,7 +192,7 @@ const Navbar = () => {
                 <>
                   {user.role === "buyer" && (
                     <div className="relative">
-                      <Link to="/orders">
+                      <Link className="my-4 md:inline block" to="/orders">
                         <i className="fa-solid cursor-pointer fa-cart-shopping text-2xl"></i>
                       </Link>
                         <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full transform translate-x-1/2 -translate-y-1/2">
@@ -189,13 +203,8 @@ const Navbar = () => {
                   <div className="relative">
       <div className="avatar">
         <Dropdown menu={{ items }} placement="bottomLeft" arrow>
-        <Avatar>
-          <AvatarImage
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="w-12 rounded-full cursor-pointer"
-            src="https://github.com/shadcn.png"
-          />
-          <AvatarFallback>CN</AvatarFallback>
+        <Avatar className="bg-secondary rounded-full p-4">
+            <i className="fa-solid fa-user cursor-pointer text-2xl"></i>
         </Avatar>
       </Dropdown>
       </div>

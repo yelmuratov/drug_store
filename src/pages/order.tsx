@@ -55,7 +55,6 @@ const Orders = () => {
         }
       });
       console.log(response.data);
-      // Handle successful order submission, e.g., clearing the cart
       setOrders([]);
       setDrugs([]);
       localStorage.removeItem("cart");
