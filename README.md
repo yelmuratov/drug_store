@@ -1,5 +1,16 @@
 # Drug Store
 
+## Screenshots
+
+**Home page**
+![Screenshot](https://github.com/yelmuratov/drug_store/blob/main/src/store/pharmacy.png)
+
+**Products page**
+![Screenshot](https://github.com/yelmuratov/drug_store/blob/main/src/store/pharmacy2.png)
+
+**Cart**
+![Screenshot](https://github.com/yelmuratov/drug_store/blob/main/src/store/pharmacy3.png)
+
 ## Project Description
 
 Drug Store is a web application designed to manage and facilitate the sale of pharmaceutical products. The platform provides features for both buyers and sellers to ensure smooth transactions and inventory management.
@@ -68,14 +79,3 @@ If you have any questions or suggestions, please contact:
 - **Email**: [yelimuratovsalimbay@gmail.com](mailto:yelimuratovsalimbay@gmail.com)
 - **GitHub**: [yelmuratov](https://github.com/yelmuratov)
 - **LinkedIn**: [salimbayYelmuratov](https://www.linkedin.com/in/salimbayelmuratov/)
-
-## Screenshots
-
-**Home page**
-![Screenshot](https://github.com/yelmuratov/drug_store/blob/main/src/store/pharmacy.png)
-
-**Products page**
-![Screenshot](https://github.com/yelmuratov/drug_store/blob/main/src/store/pharmacy2.png)
-
-**Cart**
-![Screenshot](https://github.com/yelmuratov/drug_store/blob/main/src/store/pharmacy3.png)
