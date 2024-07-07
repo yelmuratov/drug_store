@@ -64,9 +64,9 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 If you have any questions or suggestions, please contact:
 
-- **Email**: [your-email@example.com](mailto:yelimuratovsalimbay@gmail.com)
-- **GitHub**: [Your GitHub Profile](https://github.com/yelmuratov)
-- **LinkedIn**: [Your LinkedIn Profile](https://www.linkedin.com/in/salimbayelmuratov/)
+- **Email**: [yelimuratovsalimbay@gmail.com](mailto:yelimuratovsalimbay@gmail.com)
+- **GitHub**: [yelmuratov](https://github.com/yelmuratov)
+- **LinkedIn**: [salimbayYelmuratov](https://www.linkedin.com/in/salimbayelmuratov/)
 
 ## Screenshots
 
