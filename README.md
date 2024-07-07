@@ -35,7 +35,7 @@ Drug Store is a web application designed to manage and facilitate the sale of ph
     npm run dev
     ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
+5. Open [http://localhost:3000](http://localhost:5173) in your browser to see the application.
 
 ## Technologies Used
 
@@ -43,6 +43,7 @@ Drug Store is a web application designed to manage and facilitate the sale of ph
 - **React**
 - **Tailwind CSS**
 - **Redux toolkit**
+- **Vite**
 
 ## Contributing
 
